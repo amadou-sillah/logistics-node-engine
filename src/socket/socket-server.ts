@@ -1,12 +1,13 @@
 import { Server as SocketServer } from 'socket.io';
 import { Server } from 'http';
-import { broadcastTrackingUpdate } from './broadcast-service';
 import logger from '../utils/logger';
 
 export function createSocketServer(server: Server) {
   const io = new SocketServer(server, {
     cors: { origin: '*' },
-    transports: ['websocket']
+    transports: ['websocket'],
+    pingTimeout: 60000,
+    pingInterval: 25000,
   });
 
   io.on('connection', (socket) => {
@@ -26,7 +27,6 @@ export function createSocketServer(server: Server) {
     });
   });
 
-  // Store io globally for broadcast
   (global as any).io = io;
   return io;
 }
