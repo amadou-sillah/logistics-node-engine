@@ -25,6 +25,15 @@ export function createSocketServer(server: Server) {
     socket.on('disconnect', () => {
       logger.info(`Client disconnected: ${socket.id}`);
     });
+
+    socket.on('error', (err) => {
+      logger.error(`Socket error: ${err.message}`);
+    });
+  });
+
+  // Log any server-side errors
+  io.engine.on('connection_error', (err) => {
+    logger.error(`Engine connection error: ${err.message}`);
   });
 
   (global as any).io = io;
